@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class RelativeMovement : MonoBehaviour
 {
+    private Animator animator;
     //ссылка на объект, относительно которого происходит перемещение (Камера)
     [SerializeField] Transform target;
     public float moveSpeed = 6.0f;
@@ -31,6 +32,7 @@ public class RelativeMovement : MonoBehaviour
         vertSpeed = minFall;
         //Для доступа к другим присоединенным компонентам
         charController = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
     }
     // Update is called once per frame
     void Update()
@@ -67,6 +69,8 @@ public class RelativeMovement : MonoBehaviour
             float check = (charController.height + charController.radius) / 1.9f;
             hitGround = hit.distance <= check;
         }
+        // Задаем анимации Speed,которая описана в контроллере
+        animator.SetFloat("Speed",movement.sqrMagnitude);
         //Свойство isGrounded компонента CharacterController проверяет,соприкасается ли контроллер с поверхностью?
         //Изменено. Вместо проверки свойства isGrounded смотрим результат рейкастинга
         if (hitGround) 
@@ -78,6 +82,8 @@ public class RelativeMovement : MonoBehaviour
             else
             {
                 vertSpeed = minFall;
+                //Прерываем анимацию
+                animator.SetBool("Jumping", false);
             }
         }
         else
@@ -87,6 +93,12 @@ public class RelativeMovement : MonoBehaviour
             if (vertSpeed < terminalVelocity)
             {
                 vertSpeed = terminalVelocity;
+            }
+            //Если не располагается на воздухе 
+            if (contact != null)
+            {
+                //Проигрываем анимацию
+                animator.SetBool("Jumping", true);
             }
             //Луч не обнаруживает поверхность, но капсула с ней соприкасается
             if (charController.isGrounded)
