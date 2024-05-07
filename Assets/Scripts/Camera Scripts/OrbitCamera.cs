@@ -20,6 +20,7 @@ public class OrbitCamera : MonoBehaviour
     {
         rotY = transform.eulerAngles.y;
         offset = target.position - transform.position;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
