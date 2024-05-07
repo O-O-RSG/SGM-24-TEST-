@@ -10,6 +10,7 @@ public class OrbitCamera : MonoBehaviour
     public float rotSpeed = 1.5f;
     //Поворот по оси у
     private float rotY;
+    private float rotX;
     //Значение для сохранения смещения между камерой и целью(объект)
     private Vector3 offset;
     /// <summary>
@@ -24,20 +25,16 @@ public class OrbitCamera : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        float horInput = Input.GetAxis("Horizontal");
-        if (!Mathf.Approximately(horInput, 0))
+        rotY += Input.GetAxis("Mouse X") * rotSpeed * 3 * Time.deltaTime;
+        if (Input.GetButtonDown("Fire3"))
         {
-            //Медленный поворот камеры при помощи клавиш со стрелками...
-            rotY += horInput * rotSpeed;
+            rotX =0 ;
         }
-        else
-        {
-            //... или быстрый поворот с помощью мыши
-            rotY += Input.GetAxis("Mouse X") * rotSpeed * 3;
-        }
+        rotX += Input.GetAxis("Mouse Y") * rotSpeed * 3 * Time.deltaTime;
+
 
         // Здесь создаётся кватернион, который представляет собой поворот вокруг оси Y на угол
-        Quaternion rotation = Quaternion.Euler(0,rotY,0);
+        Quaternion rotation = Quaternion.Euler(rotX,rotY,0);
         // Устанавливает позицию текущего объекта так, чтобы он находился на определённом
         // расстоянии и угле относительно цели, используя поворот и смещение.
         transform.position = target.position - (rotation * offset);
