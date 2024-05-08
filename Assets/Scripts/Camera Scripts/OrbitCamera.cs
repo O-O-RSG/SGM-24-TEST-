@@ -4,42 +4,45 @@ using UnityEngine;
 
 public class OrbitCamera : MonoBehaviour
 {
-    //Сериализованная ссылка на объект, вокруг которого производится вращение(для связывание с объетком player)
     [SerializeField] Transform target;
-    //Скорость поворота
     public float rotSpeed = 1.5f;
-    //Поворот по оси у
     private float rotY;
     private float rotX;
-    //Значение для сохранения смещения между камерой и целью(объект)
     private Vector3 offset;
-    /// <summary>
-    /// Сохраняем начальное смещение между камерой и целью
-    /// </summary>
+    public float smoothFactor = 0.5f;
+    public LayerMask collisionMask;
+    public float collisionBuffer = 0.2f;
+
     void Start()
     {
         rotY = transform.eulerAngles.y;
+        rotX = transform.eulerAngles.x;
         offset = target.position - transform.position;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    // Update is called once per frame
     void LateUpdate()
     {
-        rotY += Input.GetAxis("Mouse X") * rotSpeed * 3 * Time.deltaTime;
-        if (Input.GetButtonDown("Fire3"))
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
+
+        rotY += mouseX * rotSpeed;
+        rotX -= mouseY * rotSpeed;
+
+        rotX = Mathf.Clamp(rotX, -90f, 60f);
+
+        Quaternion rotation = Quaternion.Euler(rotX, rotY, 0);
+        Vector3 desiredPosition = target.position - (rotation * offset);
+
+        // Check if the camera would collide with any objects
+        if (Physics.Linecast(target.position, desiredPosition, out RaycastHit hit, collisionMask))
         {
-            rotX =0 ;
+            // If a collision is detected, place the camera at the collision point
+            desiredPosition = hit.point + (hit.normal * collisionBuffer);
         }
-        rotX += Input.GetAxis("Mouse Y") * rotSpeed * 3 * Time.deltaTime;
 
-
-        // Здесь создаётся кватернион, который представляет собой поворот вокруг оси Y на угол
-        Quaternion rotation = Quaternion.Euler(rotX,rotY,0);
-        // Устанавливает позицию текущего объекта так, чтобы он находился на определённом
-        // расстоянии и угле относительно цели, используя поворот и смещение.
-        transform.position = target.position - (rotation * offset);
-        //Где не находилась камера, она всегда смотрит на цель
+        // Smoothly move the camera to the desired position
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothFactor);
         transform.LookAt(target);
     }
 }
