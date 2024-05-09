@@ -26,6 +26,8 @@ public class RelativeMovement : MonoBehaviour
     //Нужно для хранения данных о столкновении между функциями
     private ControllerColliderHit contact;
 
+    private Transform platformParent;
+
     private void Start()
     {
         //Инициализируем переменную вертикальной скорости
@@ -124,5 +126,23 @@ public class RelativeMovement : MonoBehaviour
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
         contact = hit;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "FlyingPlatform")
+        {
+            platformParent = other.transform;
+            transform.SetParent(platformParent);
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "FlyingPlatform")
+        {
+            transform.SetParent(null);
+            platformParent = null;
+        }
     }
 }
