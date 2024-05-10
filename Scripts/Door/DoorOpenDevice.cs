@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorOpenDevice : MonoBehaviour
+public class DoorOpenDevice: MonoBehaviour
 {
     [SerializeField] Vector3 dPos;
     private bool open = false;
