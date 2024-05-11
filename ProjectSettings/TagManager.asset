@@ -3,17 +3,19 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - MainCharacter
+  - Ghost
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Barrier
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Impassible for the camera
+  - MainCharacter
+  - Ghost
   - 
   - 
   - 
