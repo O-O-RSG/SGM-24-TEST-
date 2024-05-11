@@ -7,11 +7,11 @@ public class Menu : MonoBehaviour
 {
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return)) // Return - это код клавиши Enter
+        if (Input.GetKeyDown(KeyCode.Return))
         {
             StartGame();
         }
-        if (Input.GetKeyDown(KeyCode.Space)) // Return - это код клавиши Enter
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             StartGame();
         }
